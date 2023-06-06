@@ -1,0 +1,69 @@
+
+public class Solution {
+    public static int[] missingAndRepeating(ArrayList<Integer> arr, int n) {
+        int findXOR = 0;
+
+        // Calculating the XOR of all the numbers from 1 to n
+        for (int i = 1; i <= n; i += 1) {
+            findXOR ^= i;
+        }
+
+        // Calculating the XOR of all the elements of the array
+        for (int i = 0; i < n; i += 1) {
+            findXOR ^= arr.get(i);
+        }
+
+        // last set bit of findXOR
+        int bitIndex = findXOR & ~(findXOR - 1);
+
+        int bitSet = 0, bitNotSet = 0;
+
+        // Dividing the elements of the array in two sets, bitSet and bitNotSet
+        for (int i = 0; i < n; i++) {
+            if ((arr.get(i) & bitIndex) > 0) {
+                bitSet = bitSet ^ arr.get(i);
+            }
+
+            else {
+                bitNotSet = bitNotSet ^ arr.get(i);
+            }
+        }
+
+        // Dividing the elements from 1 to n in two sets
+        for (int i = 1; i <= n; i++) {
+            if ((i & bitIndex) > 0) {
+                bitSet = bitSet ^ i;
+            }
+
+            else {
+                bitNotSet = bitNotSet ^ i;
+            }
+        }
+
+        int r = 0, m = 0;
+
+        for (int i = 0; i < n; i += 1) {
+            // If bitSet is present in the array, it is the repeating number and bitNotSet
+            // Is the missing number
+            if (bitSet == arr.get(i)) {
+                r = bitSet;
+                m = bitNotSet;
+                break;
+            }
+
+            // If bitNotSet is present in the array, it is the repeating number and bitSet
+            // is the missing number
+            if (bitNotSet == arr.get(i)) {
+                r = bitNotSet;
+                m = bitSet;
+                break;
+            }
+        }
+
+        int[] ans = new int[]{m, r};
+
+        return ans;
+
+    }
+
+}
