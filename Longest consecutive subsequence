@@ -1,0 +1,35 @@
+import java.io.*;
+import java.util.* ;
+
+public class Solution {
+    public static int lengthOfLongestConsecutiveSequence(int[] arr, int N) {
+        // Write your code here.
+        HashMap<Integer, Boolean> mp=new HashMap<>();
+        for(int val: arr){
+            mp.put(val, true);
+        }
+
+        for(int val: arr){
+            if(mp.containsKey(val-1)){
+                mp.put(val, false);
+            }
+        }
+
+        int msp=0;
+        int ml=0;
+        for(int val: arr){
+            if(mp.get(val)==true){
+                int tl=1;
+                int tsp=val;
+                while(mp.containsKey(tsp+tl)){
+                    tl++;
+                }
+                if(tl>ml){
+                    msp=tsp;
+                    ml=tl;
+                }
+            }
+        }
+        return ml;
+    }
+}
