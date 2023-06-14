@@ -1,0 +1,49 @@
+/*
+    Time Complexity : O(N)
+    Space Complexity : O(1)
+
+    Where, N is the size of the Linked List.
+*/
+
+import java.lang.Math;
+public class Solution {
+    public static Node rotate(Node head, int k) {
+
+        // Base condition.
+        if(head == null) {
+            return head;
+        }
+
+        int len = 1;
+        Node temp = head;
+
+        // Calculate length of the linked list.
+        while(temp.next != null) {
+            temp = temp.next;
+            len += 1;
+        }
+
+        k = k % len;
+
+        // Number of rotations are same as len so no change in LL.
+        if(k == len || k == 0) {
+            return head;
+        }
+
+        // To make a circular linked list.
+        temp.next = head;
+
+        temp = head;
+
+        for(int i = 0; i < Math.abs(len - k - 1); i++) {
+            temp = temp.next;
+        }
+
+        // Changing pointers.
+        head = temp.next;
+        temp.next = null;
+
+        return head;
+
+    }
+}
