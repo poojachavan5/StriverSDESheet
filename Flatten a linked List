@@ -1,0 +1,72 @@
+/*
+    Time Complexity: O(log(N) * (N*K))
+    Space complexity: O(N)
+    
+    Where 'N' denotes the size of the linked list and 'K' is the average number of child nodes for each of the N nodes. 
+
+*/
+import java.util.*;
+
+class NodevaluePair {
+
+    int value;
+    Node node;
+
+    NodevaluePair(Node node, int value) {
+
+        this.value = value;
+        this.node = node;
+    }
+}
+
+// Class to compare values pointed by Node
+class pairComp implements Comparator<NodevaluePair> {
+
+    public int compare(NodevaluePair pairOne, NodevaluePair pairTwo) {
+
+        return pairOne.value - pairTwo.value;
+    }
+}
+
+public class Solution {
+
+    public static Node flattenLinkedList(Node head) {
+
+        Node pointer = head;
+        Node result = null;
+
+        // Heap to store all the node value pair
+        PriorityQueue<NodevaluePair> pq = new PriorityQueue<NodevaluePair>(new pairComp());
+
+        // Push the head nodes
+        while (pointer != null) {
+
+            pq.add(new NodevaluePair(pointer, pointer.data));
+            pointer = pointer.next;
+        }
+
+        // Add child nodes while popping out the minimum
+        while (!pq.isEmpty()) {
+
+            Node temp = pq.poll().node;
+
+            // If the child of temp is not null add it to the heap
+            if (temp.child != null) {
+                pq.add(new NodevaluePair(temp.child, temp.child.data));
+            }
+
+            if (result == null) {
+                result = temp;
+                pointer = temp;
+                pointer.next = null;
+            } else {
+                pointer.child = temp;
+                pointer = temp;
+                pointer.next = null;
+            }
+        }
+
+        return result;
+    }
+
+}
