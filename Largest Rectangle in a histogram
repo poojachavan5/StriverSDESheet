@@ -1,0 +1,90 @@
+/*
+    Time Complexity = O(N)
+    Space Complexity = O(N)
+
+    Where N is the number of elements in the given array/list.
+*/
+
+import java.util.Stack;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+public class Solution {
+    public static int largestRectangle(ArrayList < Integer > heights) {
+
+        int n = heights.size();
+
+        /*
+            The stack holds indexes of heights[] array. 
+            The bars stored in stack are always in 
+            increasing order of their heights.
+        */
+        Stack < Integer > s = new Stack < Integer > ();
+
+        // Initialize max area.
+        int maxArea = 0;
+
+        // To store top of stack.
+        int topOfStack;
+
+        // To store area with top bar as the smallest bar.
+        int areaWithTop;
+
+        // Run through all bars of given histogram.
+        int i = 0;
+
+        while (i < n) {
+            /* 
+              If this bar is higher than 
+              the bar on top stack, push it to stack.
+            */
+            if (s.isEmpty() || heights.get(s.peek()) <= heights.get(i)) {
+                s.push(i++);
+            }
+            /* 
+              If this bar is lower than top of stack, 
+              then calculate area of rectangle with stack top.
+            */
+            else {
+                topOfStack = s.peek();
+                s.pop();
+
+                /* 
+                  Calculate the area with heights[topOfStack] 
+                  stack as smallest bar.
+                */
+                if (s.isEmpty()) {
+                    areaWithTop = heights.get(topOfStack) * i;
+                } else {
+                    areaWithTop = heights.get(topOfStack) * (i - s.peek() - 1);
+                }
+
+                // Update max area, if needed.
+                if (maxArea < areaWithTop) {
+                    maxArea = areaWithTop;
+                }
+            }
+        }
+
+        /*
+            Now pop the remaining bars from stack and calculate 
+            area with every popped bar as the smallest bar.
+        */
+        while (s.isEmpty() == false) {
+            topOfStack = s.peek();
+            s.pop();
+
+            if (s.isEmpty()) {
+                areaWithTop = heights.get(topOfStack) * i;
+            } else {
+                areaWithTop = heights.get(topOfStack) * (i - s.peek() - 1);
+            }
+
+            if (maxArea < areaWithTop) {
+                maxArea = areaWithTop;
+            }
+        }
+
+        return maxArea;
+    }
+}
