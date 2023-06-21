@@ -1,0 +1,68 @@
+/*
+    Time complexity: O(N)
+    Space complexity: O(1)
+
+    Where 'N' is the size of the given array.
+*/
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Solution {
+	private static int partition(ArrayList<Integer> arr, int left, int right, int pivotIndex) {
+		int pivotValue = arr.get(pivotIndex);
+
+		// Bring pivot element at the end of range.
+		Collections.swap(arr, pivotIndex, right);
+
+		int current = left;
+
+		for (int i = left; i < right; i++) {
+			if (arr.get(i).intValue() < pivotValue) {
+
+				Collections.swap(arr, current, i);
+				current++;
+			}
+		}
+
+		Collections.swap(arr, right, current);
+
+		return current;
+	}
+
+	private static int quickSelect(ArrayList<Integer> arr, int left, int right, int k) {
+		if (left == right) {
+			// Size of array is 1.
+			return arr.get(left);
+		}
+
+		// Note we can select Median as pivot to guaranteed O(N) complexity always.
+		int pivotIndex = left + (int)Math.random() % (right - left + 1);
+
+		int partitionIndex = partition(arr, left, right, pivotIndex);
+
+		if (partitionIndex >= k) {
+			// Recur for right subarray
+			return quickSelect(arr, left, partitionIndex - 1, k);
+		}
+
+		if (partitionIndex < k - 1) {
+			// Recur for left subarray.
+			return quickSelect(arr, partitionIndex + 1, right, k);
+		}
+
+		return arr.get(partitionIndex);
+	}
+
+	public static ArrayList<Integer> kthSmallLarge(ArrayList<Integer> arr, int n, int k) {
+		ArrayList<Integer> result = new ArrayList<Integer>();
+
+		// Kth smallest element
+		result.add(quickSelect(arr, 0, n - 1, k));
+
+		// Kth largest element
+		result.add(quickSelect(arr, 0, n - 1, n - k + 1));
+
+		return result;
+	}
+}
