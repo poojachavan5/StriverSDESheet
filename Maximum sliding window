@@ -1,0 +1,64 @@
+/*
+    Time Complexity = O(N)
+    Space Complexity = O(N)
+
+    Where N is the number of elements in the given array/list.
+*/
+
+import java.util.Deque;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+public class Solution
+{
+
+	public static ArrayList<Integer> getMaximumOfSubarrays(ArrayList<Integer> nums, int k)
+	{
+
+		int n = nums.size();
+
+		//    Create a deque window to store the index of elements.
+		Deque<Integer> window = new LinkedList<Integer>();
+
+		//    Initialise a ArrayList to store the maximum element of subarrays.
+		ArrayList<Integer> result = new ArrayList<Integer>(n - k + 1);
+
+		//    Initialise the deque with first 'k' - 1 elements.
+		for (int i = 0; i < k - 1; i++)
+		{
+
+			//    For every element, the previous smaller elements are of no use so remove them from the window.
+			while (!window.isEmpty() && nums.get(window.getLast()) < nums.get(i))
+			{
+				window.pollLast();
+			}
+
+			//    Add new element at rear of queue.
+			window.addLast(i);
+		}
+
+		//    For rest of the elements from nums[k] to nums[n-1]
+		for (int i = k - 1; i < n; i++)
+		{
+			//    The element at the front of the queue is the largest element of previous window, so add it to the result.
+			if (!window.isEmpty() && window.getFirst() <= i - k)
+			{
+				window.pollFirst();
+			}
+
+			//    Remove the last element if it is smaller than the current element.
+			while (!window.isEmpty() && nums.get(window.getLast()) < nums.get(i))
+			{
+				window.pollLast();
+			}
+
+			//    Insert the index of current element at the back of the deque.
+			window.addLast(i);
+
+			//    Get the maximum of the current window i.e. maximum of subarray [i-k+1, i].
+			result.add( nums.get(window.getFirst()));
+		}
+
+		return result;
+	}
+}
